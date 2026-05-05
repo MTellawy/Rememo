@@ -14,7 +14,7 @@
         :root {
             --bg-color: #121212;
             --text-main: #ffffff;
-            --text-dim: #999999; /* Lighter for better visibility in dark mode */
+            --text-dim: #555555;       
             --text-typed: #4fc3f7;     
             --text-error: #f44336;     
             --btn-bg: #2a2a2a;
@@ -22,7 +22,7 @@
             --btn-border: #444444;
             --progress-bg: #222222;
             --header-bg: transparent;
-            --overlay-bg: rgba(15, 15, 15, 0.94); /* Deep minimal overlay */
+            --overlay-bg: rgba(5, 5, 5, 0.7); 
             
             --type-font: 'Courier New', Courier, monospace;
             --type-size: 3rem; 
@@ -31,7 +31,7 @@
         [data-theme="light"] {
             --bg-color: #f5f5f5;
             --text-main: #121212;
-            --text-dim: #666666; /* Darker for better visibility in light mode */    
+            --text-dim: #aaaaaa;       
             --text-typed: #0288d1;    
             --text-error: #d32f2f;     
             --btn-bg: #e0e0e0;
@@ -39,7 +39,7 @@
             --btn-border: #bbbbbb;
             --progress-bg: #e0e0e0;
             --header-bg: transparent;
-            --overlay-bg: rgba(245, 245, 245, 0.94);
+            --overlay-bg: rgba(240, 240, 240, 0.7);
         }
 
         * {
@@ -260,7 +260,7 @@
             font-family: inherit; 
             position: relative;
             display: inline;
-            transition: color 0.1s ease;
+            transition: color 0.15s ease; /* Smoother transition for Ctrl key reveal */
         }
 
         #text-display span.correct {
@@ -271,7 +271,8 @@
             color: var(--text-dim);
         }
 
-        body[data-mode="hard"] #text-display span:not(.correct) {
+        /* Hide un-typed text in Hard mode, UNLESS .reveal-hint class is applied via Ctrl key */
+        body[data-mode="hard"]:not(.reveal-hint) #text-display span:not(.correct) {
             color: transparent;
         }
 
@@ -323,13 +324,14 @@
             background: transparent; 
             border: none;
             width: 100%; 
+            max-width: 800px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             color: var(--text-main); 
             font-family: 'Poppins', sans-serif;
             transform: translateY(20px); 
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
         }
         .modal-overlay.active .modal-content { transform: translateY(0); }
 
@@ -348,22 +350,19 @@
             text-transform: uppercase;
             margin-bottom: 4rem;
             color: var(--text-main);
-            text-align: center;
         }
 
         .settings-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            row-gap: 2.5rem;
-            column-gap: 4rem;
-            width: 100%;
-            max-width: 900px;
-            margin-bottom: 3rem;
+            row-gap: 1.8rem;
+            column-gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
         }
 
         .setting-label {
             text-align: right;
-            justify-self: end;
             font-weight: 200; 
             font-size: 1.1rem;
             text-transform: uppercase;
@@ -373,17 +372,16 @@
 
         .setting-control {
             text-align: left;
-            justify-self: start;
             display: flex;
             align-items: center;
-            width: 100%;
+            position: relative;
         }
 
         .modal-select, .modal-input {
             background: transparent;
             color: var(--text-main);
             border: none;
-            border-bottom: 1px solid var(--text-dim); /* Improved visibility */
+            border-bottom: 1px solid transparent;
             font-family: 'Poppins', sans-serif;
             font-weight: 200;
             font-size: 1.1rem;
@@ -393,15 +391,14 @@
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            padding: 0.3rem 0.5rem;
+            padding: 0.2rem 0;
             transition: border-color 0.3s, color 0.3s;
-            width: 250px;
-            text-align: left;
+            width: auto;
+            min-width: 150px;
         }
 
         .modal-select:hover, .modal-input:hover, .modal-input:focus {
-            border-bottom: 1px solid var(--text-main);
-            color: var(--text-typed);
+            border-bottom: 1px solid var(--text-dim);
         }
 
         .modal-select option {
@@ -413,9 +410,10 @@
         }
 
         .modal-input {
-            width: 80px;
-            text-align: center;
+            width: 60px;
+            min-width: 60px;
             cursor: text;
+            text-align: center;
         }
 
         .settings-actions {
@@ -430,8 +428,8 @@
             border: 1px solid var(--text-dim);
             padding: 1rem 3rem;
             font-family: 'Poppins', sans-serif;
-            font-weight: 200;
-            font-size: 1.1rem;
+            font-weight: 100;
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 6px;
             border-radius: 50px;
@@ -592,12 +590,11 @@
     </main>
 
     <script>
-        // --- Settings Management & Persistence ---
         const defaultSettings = {
             theme: 'dark',
             mode: 'easy',
-            fontIndex: 3, // Courier New by default
-            fontSize: 3,  // Default size 3
+            fontIndex: 3, 
+            fontSize: 3,  
             speechRate: 1.0,
             voiceURI: ''
         };
@@ -608,7 +605,6 @@
             localStorage.setItem('rememo_settings', JSON.stringify(appSettings));
         }
 
-        // --- State Variables ---
         let targetText = "";
         let lastValidInput = "";
         let currentMode = appSettings.mode;
@@ -629,7 +625,6 @@
             { name: 'Georgia', value: "Georgia, serif" }
         ];
 
-        // --- DOM Elements ---
         const hiddenInput = document.getElementById('hidden-input');
         const textDisplay = document.getElementById('text-display');
         const overlayContainer = document.getElementById('overlay-container');
@@ -659,7 +654,6 @@
         const fontSelect = document.getElementById('set-font');
         const voiceSelect = document.getElementById('set-voice');
 
-        // --- Voice Initialization ---
         function populateVoices() {
             voiceSelect.innerHTML = '';
             const voices = synth.getVoices();
@@ -698,7 +692,6 @@
             speechSynthesis.onvoiceschanged = setPreferredVoice;
         }
 
-        // --- Apply Settings to UI ---
         function applySettingsToUI() {
             document.documentElement.setAttribute('data-theme', appSettings.theme);
             
@@ -716,7 +709,6 @@
             setPreferredVoice();
         }
 
-        // --- Settings Modal Logic ---
         function populateFontSelect() {
             fontSelect.innerHTML = '';
             fonts.forEach((f, i) => {
@@ -788,7 +780,6 @@
             hiddenInput.focus();
         });
 
-        // --- UI Interactions Syncing with Settings ---
         modeBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetBtn = e.target.closest('.seg-btn');
@@ -827,7 +818,6 @@
             hiddenInput.focus();
         });
 
-        // --- Advanced TTS Control (Real-time speed change) ---
         function speakText(startIndex = 0) {
             if (synth.speaking) synth.cancel();
             if (startIndex >= targetText.length) return;
@@ -840,7 +830,6 @@
                 utterance.voice = preferredVoice;
             }
 
-            // Track boundaries to resume from correct character index
             utterance.onboundary = (event) => {
                 currentSpokenIndex = startIndex + event.charIndex;
             };
@@ -903,8 +892,23 @@
             hiddenInput.focus();
         });
 
+        // Ctrl Key Hint Reveal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Control' && currentMode === 'hard') {
+                document.body.classList.add('reveal-hint');
+            }
+        });
 
-        // --- Core Application Logic ---
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Control') {
+                document.body.classList.remove('reveal-hint');
+            }
+        });
+
+        window.addEventListener('blur', () => {
+            document.body.classList.remove('reveal-hint');
+        });
+
         overlayContainer.addEventListener('click', () => {
             hiddenInput.focus();
         });
@@ -937,7 +941,6 @@
             setTimeout(() => hiddenInput.focus(), 50);
         }
 
-        // --- File Controls ---
         btnUpload.addEventListener('click', () => fileUpload.click());
 
         fileUpload.addEventListener('change', (e) => {
@@ -1006,7 +1009,6 @@
             }
         }
 
-        // --- Typing Logic ---
         hiddenInput.addEventListener('input', () => {
             const typed = hiddenInput.value;
 
@@ -1082,7 +1084,6 @@
 
         const defaultAppText = "A man's true self is often hidden behind his power. In King Lear, an arrogant king blindly divides his realm. Lear's decision to give away his kingdom is a desperate effort to achieve self-consciousness. He mistakenly believes his royal title is his true self; ultimately, his ignorance of his true identity becomes the tragic flaw that shatters his entire world.";
 
-        // Initialize App UI based on saved settings
         applySettingsToUI();
         initText(defaultAppText);
 
