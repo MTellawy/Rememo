@@ -1,69 +1,69 @@
-🧠 Rememo - تطبيق الحفظ والطباعة المصغر
+🧠 Rememo - Minimal Typing & Memorization App
 
-Rememo هو تطبيق ويب مصمم بأسلوب "المينيماليزم" (التبسيط الشديد) وخالي تماماً من المشتتات، يهدف إلى مساعدتك في حفظ النصوص، الخطابات، والسكريبتات من خلال التدرب على طباعتها بدقة تامة. يتميز التطبيق بواجهة نظيفة لا تظهر فيها الأدوات إلا عند الحاجة إليها.
+Rememo is a web application designed with an extreme minimalist approach, completely free of distractions, aimed at helping you memorize texts, speeches, and scripts by practicing typing them with perfect accuracy. The app features a clean interface where tools only appear when needed.
 
-✨ الميزات الرئيسية
+✨ Key Features
 
-التحقق الفوري الصارم: إذا أخطأت في كتابة حرف، ستومض الشاشة باللون الأحمر الخفيف ولن يتم قبول الحرف حتى تكتبه بشكل صحيح. (التطبيق يمنع النسخ واللصق لمنع الغش).
+Strict Instant Validation: If you mistype a character, the screen will gently flash red and the character won't be accepted until you type it correctly. (The app prevents copy-pasting to avoid cheating).
 
-وضعان للتدريب:
+Two Practice Modes:
 
-👁️ الوضع السهل (Easy): يظهر النص كـ "شبح" باهت في الخلفية ليرشدك أثناء الكتابة.
+👁️ Easy Mode: The text appears as a faint "ghost" in the background to guide you while typing.
 
-😑 الوضع الصعب (Hard): النص يكون مخفياً بالكامل، وعليك الاعتماد على ذاكرتك حصراً.
+😑 Hard Mode: The text is completely hidden, forcing you to rely exclusively on your memory.
 
-نظام الكلمات المفتاحية الذكي: يمكنك إضافة كلمات مفتاحية (مفصولة بنقطة .) لتساعدك في تذكر الهيكل الأساسي للنص. ستضيء هذه الكلمات باللون البرتقالي عند كتابتها بشكل صحيح.
+Smart Keyword System: You can add keywords (separated by a dot .) to help you remember the basic structure of the text. These words will light up in orange when typed correctly.
 
-المؤقت الذكي الخفي: في الزاوية السفلية اليمنى، يتواجد مؤقت يظهر عند تمرير الماوس، يسمح لك بضبط وقت التدريب بزيادة أو نقصان (5 دقائق) للضغطة. بمجرد بدء الوقت تثبت الأرقام لتراقبها، وعند الانتهاء يُصدر المؤقت صوت "زنة" منبهة دون إزعاجك بنوافذ منبثقة.
+Hidden Smart Timer: In the bottom right corner, a timer appears on hover, allowing you to adjust your practice time by increasing or decreasing (5 minutes) per click. Once started, the numbers remain visible to track, and upon completion, it emits a subtle "buzz" alert without interrupting you with popups.
 
-محرك أصوات مدمج (Sound Engine): التطبيق يتفاعل معك صوتياً لتجربة أكثر انغماساً:
+Built-in Sound Engine: The app interacts with you audibly for a more immersive experience:
 
-🎵 صوت رنين رقيق عند إتمام كلمة مفتاحية.
+🎵 A soft ping sound when completing a keyword.
 
-🔔 إشعار خفيف عند إتمام جملة كاملة.
+🔔 A gentle chime upon completing a full sentence.
 
-🌟 موسيقى نجاح مميزة عند الانتهاء من النص بالكامل.
+🌟 A distinct success melody upon finishing the entire text.
 
-⏪ صوت تراجع عند استخدام زر Esc.
+⏪ An undo sound when using the Esc key.
 
-القارئ الصوتي (TTS): استمع للنص للمساعدة في الحفظ، مع إمكانية تسريع أو تبطيء الصوت في أي وقت.
+Text-to-Speech (TTS): Listen to the text to aid memorization, with the ability to speed up or slow down the audio at any time.
 
-دعم رفع الملفات: يدعم التطبيق إدراج النصوص برفع أو (سحب وإفلات) ملفات بصيغ: .txt, .pdf, .doc, .docx.
+File Upload Support: The app supports inserting text by uploading or drag-and-dropping files in the following formats: .txt, .pdf, .doc, .docx.
 
-الوضع المظلم والفاتح: من الزاوية السفلية اليسرى يمكنك التبديل بكل سلاسة بين الوضع المظلم (أيقونة الشمس ☀️) والوضع الفاتح (أيقونة الهلال 🌙).
+Dark and Light Mode: From the bottom left corner, you can seamlessly toggle between Dark Mode (Sun icon ☀️) and Light Mode (Crescent moon icon 🌙).
 
-⌨️ اختصارات لوحة المفاتيح (Shortcuts)
+⌨️ Keyboard Shortcuts
 
-لجعل تجربة الحفظ سلسة وسريعة، يدعم التطبيق الاختصارات التالية:
+To make the memorization experience smooth and fast, the app supports the following shortcuts:
 
-Ctrl (استمرار الضغط): في الوضع الصعب، يقوم بإظهار كامل النص المخفي كـ "تلميح" طالما أنك تضغط على الزر.
+Ctrl (Hold): In Hard Mode, this reveals the entire hidden text as a "hint" as long as the key is pressed.
 
-Alt (استمرار الضغط): في الوضع الصعب، يقوم بإظهار الكلمات المفتاحية فقط لتساعدك على تذكر مسار النص.
+Alt (Hold): In Hard Mode, this reveals only the keywords to help you recall the text's flow.
 
-سهم يمين ➔ / سهم يسار ⬅: تخطي جملة كاملة للأمام أو للخلف (سواء عبر الكتابة التلقائية أو الحذف).
+Right Arrow ➔ / Left Arrow ⬅: Skip a full sentence forward or backward (whether by auto-typing or deleting).
 
-Shift + سهم يمين ➔ / سهم يسار ⬅: تخطي كلمة واحدة للأمام أو للخلف.
+Shift + Right Arrow ➔ / Left Arrow ⬅: Skip a single word forward or backward.
 
-Esc: التراجع وإلغاء آخر ما كتبته للوراء بشكل سريع مع تأثير صوتي.
+Esc: Quickly undo and delete the last thing you typed, accompanied by a sound effect.
 
-🚀 كيفية الاستخدام
+🚀 How to Use
 
-افتح ملف index.html في أي متصفح حديث (لا يتطلب أي خوادم أو تثبيت).
+Open the index.html file in any modern browser (requires no servers or installation).
 
-قم برفع النص الخاص بك عبر زر الرفع في أعلى اليمين (أو قم بسحب الملف وإفلاته داخل الشاشة).
+Upload your text via the upload button in the top right (or drag and drop a file into the screen).
 
-اختر الوضع (سهل أو صعب) من أعلى اليسار.
+Choose your preferred mode (Easy or Hard) from the top left.
 
-حدد الكلمات المفتاحية (إن وجدت) عبر زر الكلمات المفتاحية.
+Specify the keywords (if any) via the keywords button.
 
-ابدأ بالكتابة! استخدم اختصارات Ctrl أو Alt إذا تعثرت في تذكر الكلمة التالية.
+Start typing! Use the Ctrl or Alt shortcuts if you get stuck remembering the next word.
 
-🛠️ التقنيات المستخدمة
+🛠️ Technologies Used
 
-تم بناء التطبيق باستخدام HTML5, CSS3, و Vanilla JavaScript الأصلي (بدون إطارات عمل)، مع استخدام مكتبات خارجية فقط لقراءة الملفات:
+The app is built using pure HTML5, CSS3, and Vanilla JavaScript (no frameworks), utilizing external libraries only for file reading:
 
-PDF.js لاستخراج النصوص من ملفات الـ PDF.
+PDF.js for extracting text from PDF files.
 
-Mammoth.js لاستخراج النصوص من ملفات الوورد Word.
+Mammoth.js for extracting text from Word documents.
 
-Web Audio API لتوليد المؤثرات الصوتية برمجياً بدون الحاجة لملفات صوتية خارجية.
+Web Audio API for programmatically generating sound effects without needing external audio files.
