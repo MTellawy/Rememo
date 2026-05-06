@@ -442,27 +442,21 @@
             background: transparent;
             color: var(--text-main);
             border: none;
-            border-bottom: 1px solid transparent;
             font-family: 'Poppins', sans-serif;
             font-weight: 200;
             font-size: 1.1rem;
+            line-height: 1.6;
             text-transform: uppercase;
             letter-spacing: 2px;
-            cursor: pointer;
+            cursor: text;
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            padding: 0.2rem 0;
-            transition: border-color 0.3s, color 0.3s;
-            width: auto;
-            min-width: 150px;
+            padding: 1rem;
             width: 100%;
-            min-height: 60px;
-            resize: vertical;
-        }
-
-        .modal-textarea:focus, .modal-textarea:hover {
-            border-bottom: 1px solid var(--ui-text-dim);
+            height: 50vh;
+            resize: none;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -632,6 +626,7 @@
         let keywordIndices = new Set();
         let keywordEndIndices = new Set();
         let sentenceBoundaries = [0];
+        let sentenceSoundIndices = new Set();
         let wordBoundaries = [0];
 
         const synth = window.speechSynthesis;
@@ -903,10 +898,20 @@
 
         function calculateSentenceBoundaries() {
             sentenceBoundaries = [0];
-            const regex = /([.?!]\s+|\n+)/g;
-            let match;
-            while ((match = regex.exec(targetText)) !== null) {
-                sentenceBoundaries.push(match.index + match[0].length);
+            sentenceSoundIndices.clear();
+
+            // Boundaries for sounds (right after punctuation marks)
+            const regexSound = /([.?!]+)(?=\s|\n|$)/g;
+            let matchSound;
+            while ((matchSound = regexSound.exec(targetText)) !== null) {
+                sentenceSoundIndices.add(matchSound.index + matchSound[0].length);
+            }
+
+            // Boundaries for skipping (after the spaces following punctuation)
+            const regexSkip = /([.?!]\s+|\n+)/g;
+            let matchSkip;
+            while ((matchSkip = regexSkip.exec(targetText)) !== null) {
+                sentenceBoundaries.push(matchSkip.index + matchSkip[0].length);
             }
             if (sentenceBoundaries[sentenceBoundaries.length - 1] !== targetText.length) {
                 sentenceBoundaries.push(targetText.length);
@@ -1091,7 +1096,7 @@
         });
 
         document.addEventListener('keydown', (e) => {
-            SoundEngine.init(); // Initialize audio context on first interaction
+            SoundEngine.init();
 
             if (e.key === 'Control' && currentMode === 'hard') {
                 document.body.classList.add('reveal-hint');
@@ -1265,10 +1270,10 @@
                 if (newLen > prevLen) {
                     if (newLen === targetText.length && targetText.length > 0) {
                         SoundEngine.playSuccess();
-                    } else if (sentenceBoundaries.includes(newLen)) {
-                        SoundEngine.playSentence();
                     } else if (keywordEndIndices.has(newLen)) {
                         SoundEngine.playKeyword();
+                    } else if (sentenceSoundIndices.has(newLen)) {
+                        SoundEngine.playSentence();
                     }
                 }
                 
@@ -1283,7 +1288,6 @@
                 }
 
                 if (newLen === targetText.length && targetText.length > 0) {
-                    if(timerInterval) clearInterval(timerInterval);
                     progressBar.style.width = '100%';
                     hiddenInput.disabled = true;
                 }
