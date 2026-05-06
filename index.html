@@ -15,7 +15,7 @@
             --bg-color: #121212;
             --text-main: #ffffff;
             --text-dim: #3a3a3a;       
-            --ui-text-dim: #a0a0a0; /* Brighter gray for UI elements in dark mode */
+            --ui-text-dim: #a0a0a0; 
             --text-keyword-hint: #777777; 
             --text-typed: #4fc3f7;     
             --text-error: #f44336;     
@@ -35,7 +35,7 @@
             --bg-color: #f5f5f5;
             --text-main: #121212;
             --text-dim: #d0d0d0;       
-            --ui-text-dim: #606060; /* Darker gray for UI elements in light mode */
+            --ui-text-dim: #606060; 
             --text-keyword-hint: #999999; 
             --text-typed: #0288d1;    
             --text-error: #d32f2f;     
@@ -207,6 +207,69 @@
 
         #file-upload { display: none; }
 
+        /* --- Bottom Hover Zone & Controls --- */
+        .bottom-hover-zone {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            z-index: 40;
+        }
+
+        .bottom-controls {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 2.5rem;
+            right: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none; 
+            z-index: 50;
+        }
+
+        .bottom-controls > div {
+            pointer-events: auto; 
+        }
+
+        .theme-toggle-group, .timer-group, .timer-display-group {
+            display: flex;
+            align-items: stretch;
+            background-color: transparent;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--btn-border);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-5px);
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+        }
+
+        .bottom-hover-zone:hover ~ .bottom-controls .theme-toggle-group,
+        .bottom-hover-zone:hover ~ .bottom-controls .timer-group,
+        .bottom-hover-zone:hover ~ .bottom-controls .timer-display-group,
+        .bottom-controls:hover .theme-toggle-group,
+        .bottom-controls:hover .timer-group,
+        .bottom-controls:hover .timer-display-group {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .timer-display-group.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+
+        /* Theme Icon Logic */
+        [data-theme="dark"] #icon-sun { display: block; }
+        [data-theme="dark"] #icon-moon { display: none; }
+        [data-theme="light"] #icon-sun { display: none; }
+        [data-theme="light"] #icon-moon { display: block; }
+
+        /* --- Main Content --- */
         main {
             flex: 1;
             display: flex;
@@ -331,6 +394,7 @@
         }
         #drag-overlay.active { display: flex; }
 
+        /* --- Keywords Modal --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: var(--overlay-bg);
@@ -372,43 +436,9 @@
             text-transform: uppercase;
             margin-bottom: 4rem;
             color: var(--text-main);
-            text-align: center;
         }
 
-        /* Perfect Center Alignment for Grid */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            row-gap: 1.8rem;
-            column-gap: 4rem;
-            align-items: center;
-            margin-bottom: 4rem;
-            width: 100%;
-        }
-
-        .setting-label {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            text-align: right;
-            font-weight: 200; 
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--ui-text-dim);
-            width: 100%;
-        }
-
-        .setting-control {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            text-align: left;
-            position: relative;
-            width: 100%;
-        }
-
-        .modal-select, .modal-input, .modal-textarea {
+        .modal-textarea {
             background: transparent;
             color: var(--text-main);
             border: none;
@@ -426,88 +456,14 @@
             transition: border-color 0.3s, color 0.3s;
             width: auto;
             min-width: 150px;
-        }
-
-        .modal-select:hover, .modal-input:hover, .modal-input:focus, .modal-textarea:focus, .modal-textarea:hover {
-            border-bottom: 1px solid var(--ui-text-dim);
-        }
-
-        .modal-select option {
-            background: var(--bg-color);
-            color: var(--text-main);
-            font-weight: 300;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-
-        .modal-input {
-            width: 60px;
-            min-width: 60px;
-            cursor: text;
-            text-align: center;
-        }
-
-        .modal-textarea {
             width: 100%;
             min-height: 60px;
             resize: vertical;
-            text-transform: none;
-            letter-spacing: normal;
-            font-size: 1rem;
         }
 
-        .settings-actions {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
+        .modal-textarea:focus, .modal-textarea:hover {
+            border-bottom: 1px solid var(--ui-text-dim);
         }
-
-        .btn-save, .btn-reset {
-            background: transparent;
-            color: var(--ui-text-dim);
-            border: 1px solid var(--ui-text-dim);
-            padding: 1rem 3rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 100;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-        }
-
-        .btn-save:hover {
-            background: var(--text-main);
-            color: var(--bg-color);
-            border-color: var(--text-main);
-        }
-
-        .btn-reset:hover {
-            color: var(--text-error);
-            border-color: var(--text-error);
-        }
-
-        .btn-save:active, .btn-reset:active { transform: scale(0.98); }
-
-        #success-icon-anim {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 2rem auto;
-            display: block;
-            stroke: var(--text-typed);
-        }
-
-        .success-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
     </style>
 </head>
 <body data-mode="easy">
@@ -522,17 +478,6 @@
 
     <div id="drag-overlay">Drop file to load text...</div>
 
-    <div class="modal-overlay" id="success-overlay">
-        <div class="modal-content success-wrapper">
-            <svg id="success-icon-anim" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <h2 class="settings-title" style="margin-bottom: 2rem; font-size: 1.8rem; line-height: 1.5; letter-spacing: 8px;">Mission<br>Accomplished</h2>
-            <button id="btn-close-success" class="btn-save">Continue</button>
-        </div>
-    </div>
-
     <div class="modal-overlay" id="keywords-modal">
         <button class="modal-close" id="btn-close-keywords" title="Close">
             <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -541,60 +486,6 @@
             <h2 class="settings-title">Keywords</h2>
             <p style="margin-bottom: 2rem; font-weight: 200; font-size: 1rem; color: var(--ui-text-dim); text-transform: uppercase; letter-spacing: 2px;">Enter dot separated words</p>
             <textarea id="set-keywords" class="modal-textarea" placeholder="e.g. A man's. realm. decision."></textarea>
-            <br>
-            <button id="btn-save-keywords" class="btn-save" style="margin-top: 2rem;">Save Keywords</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="settings-modal">
-        <button class="modal-close" id="btn-close-settings" title="Close Settings">
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-        <div class="modal-content">
-            <h2 class="settings-title">Settings</h2>
-            
-            <div class="settings-grid">
-                <div class="setting-label">Theme</div>
-                <div class="setting-control">
-                    <select id="set-theme" class="modal-select">
-                        <option value="dark">Dark</option>
-                        <option value="light">Light</option>
-                    </select>
-                </div>
-                
-                <div class="setting-label">Mode</div>
-                <div class="setting-control">
-                    <select id="set-mode" class="modal-select">
-                        <option value="easy">Easy</option>
-                        <option value="hard">Hard</option>
-                    </select>
-                </div>
-
-                <div class="setting-label">Font Family</div>
-                <div class="setting-control">
-                    <select id="set-font" class="modal-select"></select>
-                </div>
-
-                <div class="setting-label">Font Size</div>
-                <div class="setting-control">
-                    <input type="number" id="set-size" class="modal-input" min="1" max="6" step="0.2">
-                </div>
-
-                <div class="setting-label">Reader Voice</div>
-                <div class="setting-control">
-                    <select id="set-voice" class="modal-select"></select>
-                </div>
-
-                <div class="setting-label">Reading Speed</div>
-                <div class="setting-control">
-                    <input type="number" id="set-speed" class="modal-input" min="0.5" max="3.0" step="0.25">
-                </div>
-            </div>
-
-            <div class="settings-actions">
-                <button id="btn-reset-settings" class="btn-reset">Reset</button>
-                <button id="btn-save-settings" class="btn-save">Apply Defaults</button>
-            </div>
         </div>
     </div>
 
@@ -661,12 +552,6 @@
                 <button class="btn-tool" id="btn-keywords" title="Add Keywords">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.58a2 2 0 0 1 0 2.83z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                 </button>
-                <button class="btn-tool" id="btn-settings" title="Settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
-            </div>
-
-            <div class="btn-group">
                 <button class="btn-tool" id="btn-upload" title="Upload Document (TXT, PDF, Word)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 </button>
@@ -682,6 +567,44 @@
             <textarea id="hidden-input" spellcheck="false" autocomplete="off"></textarea>
         </div>
     </main>
+
+    <!-- Bottom Hover Reveal Areas -->
+    <div class="bottom-hover-zone"></div>
+    <div class="bottom-controls">
+        <div class="bottom-left-area">
+            <div class="btn-group theme-toggle-group">
+                <button class="btn-tool" id="btn-theme" title="Toggle Light/Dark Mode">
+                    <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2">
+                        <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-right-area" style="display: flex; gap: 0.8rem;">
+            <div class="btn-group timer-group">
+                <button class="btn-tool" id="btn-timer-dec" title="-5 Minutes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <button class="btn-tool" id="btn-timer-toggle" title="Play/Pause Timer">
+                    <svg id="icon-timer-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    <svg id="icon-timer-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button class="btn-tool" id="btn-timer-reset" title="Reset Timer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+                <button class="btn-tool" id="btn-timer-inc" title="+5 Minutes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+            </div>
+            <div class="btn-group timer-display-group" id="timer-display-group">
+                <button class="btn-tool" id="timer-display" style="width: auto; padding: 0 1rem; font-family: 'Courier New', monospace; font-size: 1.1rem; cursor: default; color: var(--ui-text-dim);">00:00</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const defaultSettings = {
@@ -704,11 +627,10 @@
         let targetText = "";
         let lastValidInput = "";
         let currentMode = appSettings.mode;
-        let currentFontIndex = appSettings.fontIndex;
-        let currentFontSize = parseFloat(appSettings.fontSize);
         let speechRate = parseFloat(appSettings.speechRate);
         
         let keywordIndices = new Set();
+        let keywordEndIndices = new Set();
         let sentenceBoundaries = [0];
         let wordBoundaries = [0];
 
@@ -716,6 +638,12 @@
         let preferredVoice = null;
         let isSpeaking = false;
         let currentSpokenIndex = 0;
+
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let isTimerRunning = false;
+        let isTimerSet = false;
+        const TIME_INCREMENT = 300; // 5 minutes in seconds
 
         const fonts = [
             { name: 'Poppins', value: "'Poppins', sans-serif" },
@@ -725,12 +653,68 @@
             { name: 'Georgia', value: "Georgia, serif" }
         ];
 
+        // --- Sound Engine ---
+        const SoundEngine = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+            playTone(freq, type, duration, vol=0.1) {
+                if(!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch(e) {}
+            },
+            playKeyword() {
+                this.init();
+                this.playTone(600, 'sine', 0.1, 0.05);
+                setTimeout(() => this.playTone(800, 'sine', 0.15, 0.05), 50);
+            },
+            playSentence() {
+                this.init();
+                this.playTone(440, 'triangle', 0.2, 0.05);
+                setTimeout(() => this.playTone(660, 'triangle', 0.3, 0.05), 100);
+            },
+            playSuccess() {
+                this.init();
+                this.playTone(523.25, 'sine', 0.2, 0.1); 
+                setTimeout(() => this.playTone(659.25, 'sine', 0.2, 0.1), 150); 
+                setTimeout(() => this.playTone(783.99, 'sine', 0.2, 0.1), 300); 
+                setTimeout(() => this.playTone(1046.50, 'sine', 0.4, 0.1), 450); 
+            },
+            playUndo() {
+                this.init();
+                this.playTone(300, 'square', 0.15, 0.05);
+                setTimeout(() => this.playTone(200, 'square', 0.2, 0.05), 100);
+            },
+            playBuzz() {
+                this.init();
+                this.playTone(150, 'sawtooth', 0.5, 0.1);
+            }
+        };
+
         const hiddenInput = document.getElementById('hidden-input');
         const textDisplay = document.getElementById('text-display');
         const overlayContainer = document.getElementById('overlay-container');
         const progressBar = document.getElementById('progress-bar');
         
         const modeBtns = document.querySelectorAll('.seg-btn');
+        const btnTheme = document.getElementById('btn-theme');
         
         const btnFontPrev = document.getElementById('btn-font-prev');
         const btnFontNext = document.getElementById('btn-font-next');
@@ -748,37 +732,87 @@
         const btnKeywords = document.getElementById('btn-keywords');
         const keywordsModal = document.getElementById('keywords-modal');
         const btnCloseKeywords = document.getElementById('btn-close-keywords');
-        const btnSaveKeywords = document.getElementById('btn-save-keywords');
         const keywordsInput = document.getElementById('set-keywords');
         
         const btnUpload = document.getElementById('btn-upload');
         const fileUpload = document.getElementById('file-upload');
         const dragOverlay = document.getElementById('drag-overlay');
 
-        const btnSettings = document.getElementById('btn-settings');
-        const settingsModal = document.getElementById('settings-modal');
-        const btnCloseSettings = document.getElementById('btn-close-settings');
-        const btnSaveSettings = document.getElementById('btn-save-settings');
-        const btnResetSettings = document.getElementById('btn-reset-settings');
-        const fontSelect = document.getElementById('set-font');
-        const voiceSelect = document.getElementById('set-voice');
+        const timerDisplayGroup = document.getElementById('timer-display-group');
+        const timerDisplay = document.getElementById('timer-display');
+        const iconTimerPause = document.getElementById('icon-timer-pause');
+        const iconTimerPlay = document.getElementById('icon-timer-play');
 
-        const successOverlay = document.getElementById('success-overlay');
-        const btnCloseSuccess = document.getElementById('btn-close-success');
+        function updateTimerUI() {
+            let m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+            let s = (timeRemaining % 60).toString().padStart(2, '0');
+            timerDisplay.textContent = `${m}:${s}`;
+            
+            if(isTimerRunning) {
+                iconTimerPause.style.display = 'block';
+                iconTimerPlay.style.display = 'none';
+            } else {
+                iconTimerPause.style.display = 'none';
+                iconTimerPlay.style.display = 'block';
+            }
 
-        function populateVoices() {
-            voiceSelect.innerHTML = '';
-            const voices = synth.getVoices();
-            voices.forEach(voice => {
-                const option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
-                option.value = voice.voiceURI;
-                if (voice.voiceURI === appSettings.voiceURI) {
-                    option.selected = true;
-                }
-                voiceSelect.appendChild(option);
-            });
+            if (isTimerSet) {
+                timerDisplayGroup.classList.add('active');
+            } else {
+                timerDisplayGroup.classList.remove('active');
+            }
         }
+
+        function toggleTimer() {
+            if(timeRemaining <= 0 && !isTimerRunning) return;
+            isTimerRunning = !isTimerRunning;
+            if(isTimerRunning) {
+                timerInterval = setInterval(() => {
+                    timeRemaining--;
+                    updateTimerUI();
+                    if(timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        isTimerSet = false;
+                        updateTimerUI();
+                        SoundEngine.playBuzz();
+                    }
+                }, 1000);
+            } else {
+                clearInterval(timerInterval);
+            }
+            updateTimerUI();
+        }
+
+        document.getElementById('btn-timer-inc').addEventListener('click', () => {
+            timeRemaining += TIME_INCREMENT;
+            isTimerSet = true;
+            if(!isTimerRunning && timeRemaining > 0) toggleTimer();
+            updateTimerUI();
+            hiddenInput.focus();
+        });
+
+        document.getElementById('btn-timer-dec').addEventListener('click', () => {
+            timeRemaining = Math.max(0, timeRemaining - TIME_INCREMENT);
+            if(timeRemaining === 0) isTimerSet = false;
+            updateTimerUI();
+            if(timeRemaining === 0 && isTimerRunning) toggleTimer();
+            hiddenInput.focus();
+        });
+
+        document.getElementById('btn-timer-toggle').addEventListener('click', () => {
+            toggleTimer();
+            hiddenInput.focus();
+        });
+
+        document.getElementById('btn-timer-reset').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timeRemaining = 0;
+            isTimerSet = false;
+            updateTimerUI();
+            hiddenInput.focus();
+        });
 
         function setPreferredVoice() {
             const voices = synth.getVoices();
@@ -797,7 +831,6 @@
                 appSettings.voiceURI = preferredVoice.voiceURI;
                 saveSettings();
             }
-            populateVoices();
         }
 
         if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -812,6 +845,7 @@
             modeBtns.forEach(b => b.classList.toggle('active', b.dataset.mode === currentMode));
 
             currentFontIndex = parseInt(appSettings.fontIndex);
+            if(isNaN(currentFontIndex) || !fonts[currentFontIndex]) currentFontIndex = 3; 
             document.documentElement.style.setProperty('--type-font', fonts[currentFontIndex].value);
 
             currentFontSize = parseFloat(appSettings.fontSize);
@@ -822,75 +856,10 @@
             calculateKeywordIndices();
         }
 
-        function populateFontSelect() {
-            fontSelect.innerHTML = '';
-            fonts.forEach((f, i) => {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.textContent = f.name;
-                if(i === appSettings.fontIndex) opt.selected = true;
-                fontSelect.appendChild(opt);
-            });
-        }
-
-        btnSettings.addEventListener('click', () => {
-            document.getElementById('set-theme').value = appSettings.theme;
-            document.getElementById('set-mode').value = appSettings.mode;
-            document.getElementById('set-size').value = appSettings.fontSize;
-            document.getElementById('set-speed').value = appSettings.speechRate;
-            populateFontSelect();
-            populateVoices();
-            settingsModal.classList.add('active');
-        });
-
-        btnCloseSettings.addEventListener('click', () => {
-            settingsModal.classList.remove('active');
-            hiddenInput.focus();
-        });
-
-        settingsModal.addEventListener('click', (e) => {
-            if (e.target === settingsModal) {
-                settingsModal.classList.remove('active');
-                hiddenInput.focus();
-            }
-        });
-
-        btnSaveSettings.addEventListener('click', () => {
-            appSettings.theme = document.getElementById('set-theme').value;
-            appSettings.mode = document.getElementById('set-mode').value;
-            appSettings.fontIndex = parseInt(fontSelect.value);
-            appSettings.fontSize = parseFloat(document.getElementById('set-size').value);
-            appSettings.speechRate = parseFloat(document.getElementById('set-speed').value);
-            appSettings.voiceURI = voiceSelect.value;
-            
+        btnTheme.addEventListener('click', () => {
+            appSettings.theme = appSettings.theme === 'dark' ? 'light' : 'dark';
             saveSettings();
             applySettingsToUI();
-            settingsModal.classList.remove('active');
-            
-            if(isSpeaking) {
-                synth.cancel();
-                setTimeout(() => { speakText(currentSpokenIndex); }, 50);
-            }
-            hiddenInput.focus();
-        });
-
-        btnResetSettings.addEventListener('click', () => {
-            const preservedKeywords = appSettings.keywords;
-            appSettings = { ...defaultSettings, keywords: preservedKeywords };
-            saveSettings();
-            applySettingsToUI();
-
-            document.getElementById('set-theme').value = appSettings.theme;
-            document.getElementById('set-mode').value = appSettings.mode;
-            document.getElementById('set-size').value = appSettings.fontSize;
-            document.getElementById('set-speed').value = appSettings.speechRate;
-            fontSelect.value = appSettings.fontIndex;
-            voiceSelect.value = appSettings.voiceURI;
-
-            if(isSpeaking) {
-                synth.cancel();
-                setTimeout(() => { speakText(currentSpokenIndex); }, 50);
-            }
             hiddenInput.focus();
         });
 
@@ -965,6 +934,7 @@
 
         function calculateKeywordIndices() {
             keywordIndices.clear();
+            keywordEndIndices.clear();
             if(!appSettings.keywords || appSettings.keywords.length === 0 || !targetText) return;
 
             const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -975,6 +945,8 @@
                 let match;
                 while ((match = regex.exec(targetText)) !== null) {
                     const matchStart = match.index + match[1].length;
+                    const matchEnd = matchStart + kw.length;
+                    keywordEndIndices.add(matchEnd);
                     for(let i = 0; i < kw.length; i++) {
                         keywordIndices.add(matchStart + i);
                     }
@@ -986,6 +958,7 @@
         btnKeywords.addEventListener('click', () => {
             keywordsInput.value = (appSettings.keywords || []).join('. ') + ((appSettings.keywords && appSettings.keywords.length > 0) ? '.' : '');
             keywordsModal.classList.add('active');
+            keywordsInput.focus();
         });
 
         btnCloseKeywords.addEventListener('click', () => {
@@ -993,13 +966,11 @@
             hiddenInput.focus();
         });
 
-        btnSaveKeywords.addEventListener('click', () => {
+        keywordsInput.addEventListener('input', () => {
             const val = keywordsInput.value;
             appSettings.keywords = val.split('.').map(s => s.trim()).filter(Boolean);
             saveSettings();
             calculateKeywordIndices();
-            keywordsModal.classList.remove('active');
-            hiddenInput.focus();
         });
 
         function skipForward() {
@@ -1120,6 +1091,8 @@
         });
 
         document.addEventListener('keydown', (e) => {
+            SoundEngine.init(); // Initialize audio context on first interaction
+
             if (e.key === 'Control' && currentMode === 'hard') {
                 document.body.classList.add('reveal-hint');
             }
@@ -1136,6 +1109,15 @@
                 e.preventDefault();
                 if (e.shiftKey) skipWordBackward();
                 else skipBackward();
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (hiddenInput.disabled) {
+                    hiddenInput.disabled = false;
+                }
+                skipBackward();
+                SoundEngine.playUndo();
+                hiddenInput.focus();
             }
         });
 
@@ -1154,12 +1136,8 @@
         });
 
         overlayContainer.addEventListener('click', () => {
+            SoundEngine.init();
             hiddenInput.focus();
-        });
-
-        btnCloseSuccess.addEventListener('click', () => {
-            successOverlay.classList.remove('active');
-            initText(targetText);
         });
 
         function initText(rawText) {
@@ -1274,12 +1252,25 @@
             const targetSub = targetText.substring(0, typed.length);
             
             if (typed.toLowerCase() === targetSub.toLowerCase()) {
+                const prevLen = lastValidInput.length;
                 lastValidInput = targetSub;
                 hiddenInput.value = targetSub; 
+                const newLen = lastValidInput.length;
                 
                 document.body.classList.remove('error-state');
                 updateProgress();
                 updateSpans();
+
+                // Sound triggers on forward typing
+                if (newLen > prevLen) {
+                    if (newLen === targetText.length && targetText.length > 0) {
+                        SoundEngine.playSuccess();
+                    } else if (sentenceBoundaries.includes(newLen)) {
+                        SoundEngine.playSentence();
+                    } else if (keywordEndIndices.has(newLen)) {
+                        SoundEngine.playKeyword();
+                    }
+                }
                 
                 const caretSpan = textDisplay.querySelector('.caret');
                 if (caretSpan) {
@@ -1291,10 +1282,10 @@
                     }
                 }
 
-                if (targetSub === targetText && targetText.length > 0) {
+                if (newLen === targetText.length && targetText.length > 0) {
+                    if(timerInterval) clearInterval(timerInterval);
                     progressBar.style.width = '100%';
                     hiddenInput.disabled = true;
-                    successOverlay.classList.add('active');
                 }
             } else {
                 hiddenInput.value = lastValidInput; 
