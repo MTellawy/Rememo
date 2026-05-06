@@ -1,83 +1,69 @@
-🧠 Rememo - Minimal Typing & Memorization Test
+🧠 Rememo - تطبيق الحفظ والطباعة المصغر
 
-Rememo is a minimalist, distraction-free web application designed to help users practice typing and memorize texts. Whether you are practicing a speech, a script, or just improving your typing accuracy, Rememo provides a strict, real-time validation environment that ensures perfect recall.
+Rememo هو تطبيق ويب مصمم بأسلوب "المينيماليزم" (التبسيط الشديد) وخالي تماماً من المشتتات، يهدف إلى مساعدتك في حفظ النصوص، الخطابات، والسكريبتات من خلال التدرب على طباعتها بدقة تامة. يتميز التطبيق بواجهة نظيفة لا تظهر فيها الأدوات إلا عند الحاجة إليها.
 
-✨ Key Features
+✨ الميزات الرئيسية
 
-Strict Real-Time Validation: Incorrect keystrokes are instantly blocked, and the screen flashes red to alert you. You cannot proceed until you type the exact correct character.
+التحقق الفوري الصارم: إذا أخطأت في كتابة حرف، ستومض الشاشة باللون الأحمر الخفيف ولن يتم قبول الحرف حتى تكتبه بشكل صحيح. (التطبيق يمنع النسخ واللصق لمنع الغش).
 
-Two Practice Modes:
+وضعان للتدريب:
 
-👁️ Easy Mode: The target text is visible as a faint "ghost" text in the background, guiding your typing perfectly.
+👁️ الوضع السهل (Easy): يظهر النص كـ "شبح" باهت في الخلفية ليرشدك أثناء الكتابة.
 
-😑 Hard Mode: The target text is completely hidden, forcing you to rely entirely on your memory.
+😑 الوضع الصعب (Hard): النص يكون مخفياً بالكامل، وعليك الاعتماد على ذاكرتك حصراً.
 
-Advanced Text-to-Speech (TTS): Listen to the text being read aloud. You can dynamically increase or decrease the reading speed in real-time without the audio restarting. It automatically defaults to premium voices (like Microsoft Brian on Edge or Google US English on Chrome).
+نظام الكلمات المفتاحية الذكي: يمكنك إضافة كلمات مفتاحية (مفصولة بنقطة .) لتساعدك في تذكر الهيكل الأساسي للنص. ستضيء هذه الكلمات باللون البرتقالي عند كتابتها بشكل صحيح.
 
-File Upload & Drag-and-Drop: Easily import your own study materials. Supports drag-and-drop for .txt, .pdf, .doc, and .docx files while preserving their original paragraph formatting.
+المؤقت الذكي الخفي: في الزاوية السفلية اليمنى، يتواجد مؤقت يظهر عند تمرير الماوس، يسمح لك بضبط وقت التدريب بزيادة أو نقصان (5 دقائق) للضغطة. بمجرد بدء الوقت تثبت الأرقام لتراقبها، وعند الانتهاء يُصدر المؤقت صوت "زنة" منبهة دون إزعاجك بنوافذ منبثقة.
 
-Smart Auto-Scrolling: The text area automatically scrolls as you type, keeping the blinking cursor perfectly centered on your screen for maximum comfort.
+محرك أصوات مدمج (Sound Engine): التطبيق يتفاعل معك صوتياً لتجربة أكثر انغماساً:
 
-Anti-Cheat System: Text selection and copying are completely disabled globally to enforce actual typing and memorization.
+🎵 صوت رنين رقيق عند إتمام كلمة مفتاحية.
 
-Persistent Settings: All your preferences (Theme, Mode, Font, Size, Reading Speed, and Voice) are saved locally in your browser and automatically applied the next time you open the app.
+🔔 إشعار خفيف عند إتمام جملة كاملة.
 
-Cinematic Settings UI: An ultra-minimal, full-screen settings menu inspired by movie end-credits for a premium feel.
+🌟 موسيقى نجاح مميزة عند الانتهاء من النص بالكامل.
 
-🛠️ Technologies Used
+⏪ صوت تراجع عند استخدام زر Esc.
 
-Rememo is built with a lightweight, dependency-free core, utilizing only native web technologies along with two specialized libraries for document parsing:
+القارئ الصوتي (TTS): استمع للنص للمساعدة في الحفظ، مع إمكانية تسريع أو تبطيء الصوت في أي وقت.
 
-HTML5, CSS3, Vanilla JavaScript: Core application logic and UI.
+دعم رفع الملفات: يدعم التطبيق إدراج النصوص برفع أو (سحب وإفلات) ملفات بصيغ: .txt, .pdf, .doc, .docx.
 
-PDF.js: Used to extract raw text from uploaded .pdf documents.
+الوضع المظلم والفاتح: من الزاوية السفلية اليسرى يمكنك التبديل بكل سلاسة بين الوضع المظلم (أيقونة الشمس ☀️) والوضع الفاتح (أيقونة الهلال 🌙).
 
-Mammoth.js: Used to extract raw text from Word documents (.docx).
+⌨️ اختصارات لوحة المفاتيح (Shortcuts)
 
-Web Speech API: Powers the native Text-to-Speech functionality.
+لجعل تجربة الحفظ سلسة وسريعة، يدعم التطبيق الاختصارات التالية:
 
-🚀 Getting Started
+Ctrl (استمرار الضغط): في الوضع الصعب، يقوم بإظهار كامل النص المخفي كـ "تلميح" طالما أنك تضغط على الزر.
 
-Since Rememo is a purely client-side application, no build tools or server setup are required.
+Alt (استمرار الضغط): في الوضع الصعب، يقوم بإظهار الكلمات المفتاحية فقط لتساعدك على تذكر مسار النص.
 
-Clone the repository:
+سهم يمين ➔ / سهم يسار ⬅: تخطي جملة كاملة للأمام أو للخلف (سواء عبر الكتابة التلقائية أو الحذف).
 
-git clone [https://github.com/yourusername/rememo.git](https://github.com/yourusername/rememo.git)
+Shift + سهم يمين ➔ / سهم يسار ⬅: تخطي كلمة واحدة للأمام أو للخلف.
 
+Esc: التراجع وإلغاء آخر ما كتبته للوراء بشكل سريع مع تأثير صوتي.
 
-Open the app:
-Simply open the index.html file in any modern web browser (Google Chrome or Microsoft Edge recommended for the best TTS experience).
+🚀 كيفية الاستخدام
 
-⚙️ Customization & Controls
+افتح ملف index.html في أي متصفح حديث (لا يتطلب أي خوادم أو تثبيت).
 
-Hover over the top of the screen to reveal the hidden toolbar. From there, you can control:
+قم برفع النص الخاص بك عبر زر الرفع في أعلى اليمين (أو قم بسحب الملف وإفلاته داخل الشاشة).
 
-Mode Switch: Toggle between Easy (👁️) and Hard (😑) modes.
+اختر الوضع (سهل أو صعب) من أعلى اليسار.
 
-Typography: Change the font family (Poppins, Arial, Times New Roman, Courier New, Georgia) and adjust the font size dynamically using the - and + buttons.
+حدد الكلمات المفتاحية (إن وجدت) عبر زر الكلمات المفتاحية.
 
-Audio Controls: Play/Pause the TTS reading, and use the adjacent arrow buttons to adjust reading speed on the fly.
+ابدأ بالكتابة! استخدم اختصارات Ctrl أو Alt إذا تعثرت في تذكر الكلمة التالية.
 
-Theme Toggle: Switch between Dark Mode (default) and Light Mode.
+🛠️ التقنيات المستخدمة
 
-Start Over: Reset your progress to the beginning of the text.
+تم بناء التطبيق باستخدام HTML5, CSS3, و Vanilla JavaScript الأصلي (بدون إطارات عمل)، مع استخدام مكتبات خارجية فقط لقراءة الملفات:
 
-Upload: Manually select a file to practice, or simply drag and drop a file anywhere on the screen.
+PDF.js لاستخراج النصوص من ملفات الـ PDF.
 
-Settings Menu: Open the full-screen cinematic settings menu to set your default preferences.
+Mammoth.js لاستخراج النصوص من ملفات الوورد Word.
 
-📝 How to Use
-
-Load your text either by pasting it, uploading a document, or dragging a file onto the screen.
-
-Select your preferred mode (Easy or Hard).
-
-Start typing! The text is case-insensitive, but you must type all punctuation (commas, periods, etc.) exactly as they appear in the original text.
-
-If you make a mistake, the screen will flash red, and the keystroke will be ignored. Correct the mistake to continue.
-
-Watch the top progress bar fill up as you approach 100% completion.
-
-📄 License
-
-This project is open-source and available under the MIT License.
+Web Audio API لتوليد المؤثرات الصوتية برمجياً بدون الحاجة لملفات صوتية خارجية.
