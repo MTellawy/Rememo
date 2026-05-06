@@ -627,12 +627,16 @@
         let keywordEndIndices = new Set();
         let sentenceBoundaries = [0];
         let sentenceSoundIndices = new Set();
+        let paragraphBoundaries = [0];
         let wordBoundaries = [0];
 
         const synth = window.speechSynthesis;
         let preferredVoice = null;
         let isSpeaking = false;
         let currentSpokenIndex = 0;
+        let autoTypeTimer = null;
+        let targetAutoTypeIndex = 0;
+        let speechRestartTimeout = null;
 
         let timerInterval = null;
         let timeRemaining = 0;
@@ -900,14 +904,12 @@
             sentenceBoundaries = [0];
             sentenceSoundIndices.clear();
 
-            // Boundaries for sounds (right after punctuation marks)
             const regexSound = /([.?!]+)(?=\s|\n|$)/g;
             let matchSound;
             while ((matchSound = regexSound.exec(targetText)) !== null) {
                 sentenceSoundIndices.add(matchSound.index + matchSound[0].length);
             }
 
-            // Boundaries for skipping (after the spaces following punctuation)
             const regexSkip = /([.?!]\s+|\n+)/g;
             let matchSkip;
             while ((matchSkip = regexSkip.exec(targetText)) !== null) {
@@ -917,6 +919,19 @@
                 sentenceBoundaries.push(targetText.length);
             }
             sentenceBoundaries = [...new Set(sentenceBoundaries)].sort((a,b) => a-b);
+        }
+
+        function calculateParagraphBoundaries() {
+            paragraphBoundaries = [0];
+            const regex = /(\n+)/g;
+            let match;
+            while ((match = regex.exec(targetText)) !== null) {
+                paragraphBoundaries.push(match.index + match[0].length);
+            }
+            if (paragraphBoundaries[paragraphBoundaries.length - 1] !== targetText.length) {
+                paragraphBoundaries.push(targetText.length);
+            }
+            paragraphBoundaries = [...new Set(paragraphBoundaries)].sort((a,b) => a-b);
         }
 
         function calculateWordBoundaries() {
@@ -978,6 +993,19 @@
             calculateKeywordIndices();
         });
 
+        function restartSpeechIfSpeaking() {
+            if (isSpeaking || speechRestartTimeout) {
+                synth.cancel();
+                clearTimeout(speechRestartTimeout);
+                speechRestartTimeout = setTimeout(() => {
+                    if(hiddenInput.value.length < targetText.length) {
+                        speakText(hiddenInput.value.length);
+                    }
+                    speechRestartTimeout = null;
+                }, 150);
+            }
+        }
+
         function skipForward() {
             if(!targetText) return;
             const currentLen = hiddenInput.value.length;
@@ -985,6 +1013,7 @@
             if (next !== undefined) {
                 hiddenInput.value = targetText.substring(0, next);
                 processTyping();
+                restartSpeechIfSpeaking();
             }
         }
 
@@ -995,6 +1024,7 @@
             const prev = prevBounds.length > 0 ? prevBounds[prevBounds.length - 1] : 0;
             hiddenInput.value = targetText.substring(0, prev);
             processTyping();
+            restartSpeechIfSpeaking();
         }
 
         function skipWordForward() {
@@ -1004,6 +1034,7 @@
             if (next !== undefined) {
                 hiddenInput.value = targetText.substring(0, next);
                 processTyping();
+                restartSpeechIfSpeaking();
             }
         }
 
@@ -1014,6 +1045,28 @@
             const prev = prevBounds.length > 0 ? prevBounds[prevBounds.length - 1] : 0;
             hiddenInput.value = targetText.substring(0, prev);
             processTyping();
+            restartSpeechIfSpeaking();
+        }
+
+        function skipParagraphForward() {
+            if(!targetText) return;
+            const currentLen = hiddenInput.value.length;
+            const next = paragraphBoundaries.find(b => b > currentLen);
+            if (next !== undefined) {
+                hiddenInput.value = targetText.substring(0, next);
+                processTyping();
+                restartSpeechIfSpeaking();
+            }
+        }
+
+        function skipParagraphBackward() {
+            if(!targetText) return;
+            const currentLen = hiddenInput.value.length;
+            const prevBounds = paragraphBoundaries.filter(b => b < currentLen);
+            const prev = prevBounds.length > 0 ? prevBounds[prevBounds.length - 1] : 0;
+            hiddenInput.value = targetText.substring(0, prev);
+            processTyping();
+            restartSpeechIfSpeaking();
         }
 
         btnSkipFwd.addEventListener('click', () => { skipForward(); hiddenInput.focus(); });
@@ -1031,26 +1084,79 @@
                 utterance.voice = preferredVoice;
             }
 
+            targetAutoTypeIndex = startIndex;
+            while (targetAutoTypeIndex < targetText.length && !/[a-zA-Z0-9'\u0600-\u06FF]/.test(targetText[targetAutoTypeIndex])) {
+                targetAutoTypeIndex++;
+            }
+
             utterance.onboundary = (event) => {
                 if (event.name === 'word') {
                     currentSpokenIndex = startIndex + event.charIndex;
+                    let wordLen = event.charLength;
+                    
+                    // Chrome fallback to extract proper word length
+                    if (!wordLen || wordLen === undefined) {
+                        const remainingText = textToSpeak.substring(event.charIndex);
+                        const match = remainingText.match(/^[a-zA-Z0-9'\u0600-\u06FF]+/);
+                        wordLen = match ? match[0].length : 1;
+                    }
+                    
+                    targetAutoTypeIndex = currentSpokenIndex + wordLen;
+                    
+                    while (targetAutoTypeIndex < targetText.length && !/[a-zA-Z0-9'\u0600-\u06FF]/.test(targetText[targetAutoTypeIndex])) {
+                        targetAutoTypeIndex++;
+                    }
                 }
             };
 
             utterance.onstart = () => {
                 isSpeaking = true;
                 btnRead.style.color = 'var(--text-typed)';
+                
+                if (autoTypeTimer) clearInterval(autoTypeTimer);
+                autoTypeTimer = setInterval(() => {
+                    if (!isSpeaking) {
+                        clearInterval(autoTypeTimer);
+                        return;
+                    }
+                    const currentLen = hiddenInput.value.length;
+                    if (currentLen < targetAutoTypeIndex && currentLen < targetText.length) {
+                        const gap = targetAutoTypeIndex - currentLen;
+                        const step = Math.max(1, Math.ceil(gap / 3)); 
+                        hiddenInput.value = targetText.substring(0, currentLen + step);
+                        processTyping();
+                    }
+                }, 20); 
             };
 
             utterance.onend = () => {
-                isSpeaking = false;
-                btnRead.style.color = 'var(--text-main)';
-                currentSpokenIndex = 0;
+                if (!speechRestartTimeout) {
+                    isSpeaking = false;
+                    btnRead.style.color = 'var(--text-main)';
+                    currentSpokenIndex = 0;
+                }
+                
+                if (!speechRestartTimeout && targetAutoTypeIndex >= targetText.length - 5) {
+                    targetAutoTypeIndex = targetText.length;
+                    let flushTimer = setInterval(() => {
+                        const currentLen = hiddenInput.value.length;
+                        if (currentLen < targetText.length) {
+                            hiddenInput.value = targetText.substring(0, currentLen + 1);
+                            processTyping();
+                        } else {
+                            clearInterval(flushTimer);
+                        }
+                    }, Math.max(15, 40 / speechRate));
+                }
+                clearInterval(autoTypeTimer);
             };
             
             utterance.onerror = () => {
-                isSpeaking = false;
-                btnRead.style.color = 'var(--text-main)';
+                if (!speechRestartTimeout) {
+                    isSpeaking = false;
+                    btnRead.style.color = 'var(--text-main)';
+                }
+                clearInterval(autoTypeTimer);
             }
 
             synth.speak(utterance);
@@ -1061,10 +1167,7 @@
                 appSettings.speechRate = parseFloat((appSettings.speechRate + 0.25).toFixed(2));
                 saveSettings();
                 applySettingsToUI();
-                if(isSpeaking) {
-                    synth.cancel();
-                    setTimeout(() => { speakText(currentSpokenIndex); }, 50);
-                }
+                restartSpeechIfSpeaking();
             }
             hiddenInput.focus();
         });
@@ -1074,10 +1177,7 @@
                 appSettings.speechRate = parseFloat((appSettings.speechRate - 0.25).toFixed(2));
                 saveSettings();
                 applySettingsToUI();
-                if(isSpeaking) {
-                    synth.cancel();
-                    setTimeout(() => { speakText(currentSpokenIndex); }, 50);
-                }
+                restartSpeechIfSpeaking();
             }
             hiddenInput.focus();
         });
@@ -1087,10 +1187,11 @@
                 synth.cancel(); 
                 isSpeaking = false;
                 btnRead.style.color = 'var(--text-main)';
+                clearInterval(autoTypeTimer);
             } else {
                 if (!preferredVoice) setPreferredVoice();
-                currentSpokenIndex = 0;
-                speakText(0);
+                currentSpokenIndex = hiddenInput.value.length;
+                speakText(currentSpokenIndex);
             }
             hiddenInput.focus();
         });
@@ -1105,6 +1206,7 @@
                 e.preventDefault(); 
                 document.body.classList.add('reveal-keywords');
             }
+            
             if (e.key === 'ArrowRight' && document.activeElement === hiddenInput) {
                 e.preventDefault();
                 if (e.shiftKey) skipWordForward();
@@ -1115,11 +1217,17 @@
                 if (e.shiftKey) skipWordBackward();
                 else skipBackward();
             }
+            if (e.key === 'ArrowUp' && document.activeElement === hiddenInput) {
+                e.preventDefault();
+                skipParagraphBackward();
+            }
+            if (e.key === 'ArrowDown' && document.activeElement === hiddenInput) {
+                e.preventDefault();
+                skipParagraphForward();
+            }
+
             if (e.key === 'Escape') {
                 e.preventDefault();
-                if (hiddenInput.disabled) {
-                    hiddenInput.disabled = false;
-                }
                 skipBackward();
                 SoundEngine.playUndo();
                 hiddenInput.focus();
@@ -1149,6 +1257,7 @@
             targetText = rawText.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
             
             calculateSentenceBoundaries();
+            calculateParagraphBoundaries();
             calculateWordBoundaries();
 
             textDisplay.innerHTML = '';
@@ -1266,7 +1375,6 @@
                 updateProgress();
                 updateSpans();
 
-                // Sound triggers on forward typing
                 if (newLen > prevLen) {
                     if (newLen === targetText.length && targetText.length > 0) {
                         SoundEngine.playSuccess();
@@ -1289,7 +1397,9 @@
 
                 if (newLen === targetText.length && targetText.length > 0) {
                     progressBar.style.width = '100%';
-                    hiddenInput.disabled = true;
+                    // We DO NOT disable hiddenInput so Timer keeps counting independently
+                    // if(timerInterval) clearInterval(timerInterval); // REMOVED
+                    // hiddenInput.disabled = true; // REMOVED
                 }
             } else {
                 hiddenInput.value = lastValidInput; 
